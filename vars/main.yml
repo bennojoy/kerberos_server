@@ -1,0 +1,13 @@
+---
+
+redhat_pkg:
+  - libselinux-python
+  - krb5-libs 
+  - krb5-server 
+  - krb5-workstation 
+
+ubuntu_pkg:
+  - krb5-kdc 
+  - krb5-admin-server
+  - python-selinux
+
