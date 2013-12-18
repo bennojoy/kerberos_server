@@ -28,7 +28,7 @@ Following is an example which deploys are kerberos server with Realm as BENNO.CO
 ```
 - hosts: all
   roles:
-  - {role: kerberos_server, realm_name: "BENNO.COM", kadmin_user: "root" kadmin_pass: "foobar" }
+  - {role: kerberos_server, realm_name: "BENNO.COM", kadmin_user: "root", kadmin_pass: "foobar" }
 
 ```
 
