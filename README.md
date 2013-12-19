@@ -15,11 +15,11 @@ Role Variables
 The variables that can be passed to this role and a brief description about them are as follows:
 
 ```
-realm_name: EXAMPLE.COM                           # The realm name for the kerneros server
-kdc_port: 88                                      # The port in which kdc should listen
-master_db_pass: foobar                            # Password for the master kerberos database
-kadmin_pass: foobar                               # Password for the kerberos admin
-kadmin_user: benz                                 # Username for the kerberos server
+kerberos_server_realm_name: EXAMPLE.COM                           # The realm name for the kerneros server
+kerberos_server_kdc_port: 88                                      # The port in which kdc should listen
+kerberos_server_master_db_pass: foobar                            # Password for the master kerberos database
+kerberos_server_kadmin_pass: foobar                               # Password for the kerberos admin
+kerberos_server_kadmin_user: benz                                 # Username for the kerberos server
 ```
 - Examples
 
@@ -28,7 +28,9 @@ Following is an example which deploys are kerberos server with Realm as BENNO.CO
 ```
 - hosts: all
   roles:
-  - {role: kerberos_server, realm_name: "BENNO.COM", kadmin_user: "root", kadmin_pass: "foobar" }
+  - {role: kerberos_server, kerberos_server_realm_name: "BENNO.COM", 
+                            kerberos_server_kadmin_user: "root", 
+                            kerberos_server_kadmin_pass: "foobar" }
 
 ```
 
