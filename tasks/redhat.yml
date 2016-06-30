@@ -5,7 +5,7 @@
 
 - name: Install the kerberos packages 
   yum: name={{ item }} state=present
-  with_items: kerberos_server_redhat_pkg
+  with_items: "{{ kerberos_server_redhat_pkg }}"
 
 - name: Copy the kdc configuration file 
   template: src=kdc.conf.j2 dest=/var/kerberos/krb5kdc/kdc.conf
@@ -31,7 +31,7 @@
 
 - name: Start the kerberos services 
   service: name={{ item }} state=started enabled=yes
-  with_items: kerberos_service
+  with_items: "{{ kerberos_service }}"
 
 - name: Create an admin for the administering the kerberos database
   shell: echo -e "{{ kerberos_server_kadmin_pass }}\n{{ kerberos_server_kadmin_pass }}" | kadmin.local  -q "addprinc {{ kerberos_server_kadmin_user }}/admin"; touch /var/kerberos/admin_created creates=/var/kerberos/admin_created

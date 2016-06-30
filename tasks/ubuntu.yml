@@ -5,7 +5,7 @@
 - name: Install the kerberos packages 
   apt: name={{ item }} state=present update_cache=yes
   register: install
-  with_items: kerberos_server_ubuntu_pkg
+  with_items: "{{ kerberos_server_ubuntu_pkg }}"
 
 - name: Copy the kdc configuration file 
   template: src=kdc.conf.j2 dest=/etc/krb5kdc/kdc.conf
@@ -30,7 +30,7 @@
 
 - name: Start the kerberos services 
   service: name={{ item }} state=started enabled=yes
-  with_items: kerberos_service
+  with_items: "{{ kerberos_service }}"
 
 - name: Create an admin for the administering the kerberos database
   script: create_admin.sh  {{ kerberos_server_kadmin_pass }} {{ kerberos_server_kadmin_user }} 
