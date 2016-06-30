@@ -2,5 +2,5 @@
 
 - name: restart kerberos
   service: name={{ item }} state=restarted
-  with_items: kerberos_service
+  with_items: "{{ kerberos_service }}"
  
