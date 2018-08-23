@@ -1,3 +1,4 @@
+---
 kerberos_service:
   - krb5kdc
   - kadmin

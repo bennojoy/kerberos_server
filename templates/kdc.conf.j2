@@ -8,5 +8,7 @@
   acl_file = /var/kerberos/krb5kdc/kadm5.acl
   dict_file = /usr/share/dict/words
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+  supported_enctypes = {{ kerberos_server_supported_enctypes }}
+  max_life = {{ kerberos_server_ticket_lifetime }}
+  max_renewable_life = {{ kerberos_server_renew_lifetime }}
  }
