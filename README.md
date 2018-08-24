@@ -2,6 +2,7 @@ kerberos_server
 ========
 
 [![Build Status](https://travis-ci.com/ultratendency/kerberos_server.svg?branch=master)](https://travis-ci.com/ultratendency/kerberos_server)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 This role helps in installing a KDC on the target host, initially forked from the repository of Benno Joy. 
 The playbook deploys a KDC and creates a new realm as specified in the parameter, it also creates a default admin user
@@ -45,7 +46,7 @@ None
 License
 -------
 
-BSD
+Licensed under BSD 3-clause. See the [LICENSE](LICENSE) file for details.
 
 Author Information
 ------------------
