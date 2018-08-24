@@ -50,4 +50,4 @@ BSD
 Author Information
 ------------------
 
-Matthias Baumann & Jan Hentschel
+Matthias Baumann & Jan Hentschel ([Ultra Tendency GmbH](http://ultratendency.com/))
