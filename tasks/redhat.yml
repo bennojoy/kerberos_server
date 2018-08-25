@@ -39,3 +39,21 @@
 
 - name: Create an admin for administering the kerberos database
   shell: echo -e "{{ kerberos_server_kadmin_pass }}\n{{ kerberos_server_kadmin_pass }}" | kadmin.local  -q "addprinc {{ kerberos_server_kadmin_user }}/admin"; touch /var/kerberos/admin_created creates=/var/kerberos/admin_created
+
+- name: Get existing users
+  shell: kadmin.local -q "listprincs"
+  ignore_errors: yes
+  changed_when: false
+  register: existing_users
+
+- name: Ensure users exist
+  shell: kadmin.local -q "addprinc -pw {{ item.password }} {{ item.name }}"
+  when: item.state == 'present' and existing_users.stdout.find('@'.join((item.name, (kerberos_server_realm_name | upper())))) == -1
+  no_log: true
+  with_items: "{{ kerberos_server_users }}"
+
+- name: Remove absent users
+  shell: kadmin.local -q "delprinc -force {{ item.name }}"
+  with_items: "{{ kerberos_server_users }}"
+  no_log: true
+  when: item.state == 'absent' and existing_users.stdout.find('@'.join((item.name, (kerberos_server_realm_name | upper())))) >= 0

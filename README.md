@@ -25,6 +25,10 @@ The variables that can be passed to this role and a brief description about them
     kerberos_server_master_db_pass: foobar          # Password for the master kerberos database
     kerberos_server_kadmin_pass: foobar             # Password for the kerberos admin
     kerberos_server_kadmin_user: test               # Username for the kerberos server
+    kerberos_server_users:                          # List of users that should be added to the KDC database
+      - name: user
+        password: password                          # initial password, if the user exists already, the password will not be changed
+        state: present                              # can be present or absent
 
 Example
 -------
