@@ -7,8 +7,8 @@
  default_realm = {{ kerberos_server_realm_name|upper() }}
  dns_lookup_realm = false
  dns_lookup_kdc = false
- ticket_lifetime = 24h
- renew_lifetime = 7d
+ ticket_lifetime = {{ kerberos_server_ticket_lifetime }}
+ renew_lifetime = {{ kerberos_server_renew_lifetime }}
  forwardable = true
 
 [realms]

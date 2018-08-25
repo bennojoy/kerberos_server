@@ -1,10 +1,15 @@
 ---
-
 kerberos_server_realm_name: EXAMPLE.COM
 kerberos_server_kdc_port: 88
 kerberos_server_master_db_pass: foobar
 kerberos_server_kadmin_pass: foobar
-kerberos_server_kadmin_user: benz
+kerberos_server_kadmin_user: test
+kerberos_server_ticket_lifetime: 24h
+kerberos_server_renew_lifetime: 7d
+kerberos_server_supported_enctypes: 'aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal'
 
-
-
+kerberos_server_users: []
+# To add users, add entries lik this:
+#  - name: user1
+#    password: password
+#    state: present

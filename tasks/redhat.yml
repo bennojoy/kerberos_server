@@ -1,38 +1,59 @@
 ---
-
-- name: Add the OS specific varibles
+- name: Add the OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Install the kerberos packages 
-  yum: name={{ item }} state=present
-  with_items: kerberos_server_redhat_pkg
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ kerberos_server_redhat_pkg }}"
 
 - name: Copy the kdc configuration file 
-  template: src=kdc.conf.j2 dest=/var/kerberos/krb5kdc/kdc.conf
+  template:
+    src: kdc.conf.j2
+    dest: /var/kerberos/krb5kdc/kdc.conf
   notify: 
    - restart kerberos
 
 - name: Copy the kdc acl configuration file 
-  template: src=kadm5.acl.j2 dest=/var/kerberos/krb5kdc/kadm5.acl
+  template:
+    src: kadm5.acl.j2
+    dest: /var/kerberos/krb5kdc/kadm5.acl
   notify: 
    - restart kerberos
 
 - name: Copy the client configuration file 
-  template: src=krb5.conf.j2 dest=/etc/krb5.conf
-
-- name: Link /dev/random to /dev/urandom
-  file: path=/dev/random src=/dev/urandom state=link force=yes
+  template:
+    src: krb5.conf.j2
+    dest: /etc/krb5.conf
 
 - name: Create the initial kerberos database
   shell: echo -e "{{ kerberos_server_master_db_pass }}\n{{ kerberos_server_master_db_pass }}" | kdb5_util create -s; touch /var/kerberos/db_created creates=/var/kerberos/db_created
 
-- name: Make sure we have the entry for hostname in /etc/hosts
-  host: ip={{ ansible_default_ipv4.address }} hostname={{ ansible_hostname }} aliases="{{ ansible_hostname + '.' + kerberos_server_realm_name|lower() }}"
-
 - name: Start the kerberos services 
-  service: name={{ item }} state=started enabled=yes
-  with_items: kerberos_service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items: "{{ kerberos_service }}"
 
-- name: Create an admin for the administering the kerberos database
+- name: Create an admin for administering the kerberos database
   shell: echo -e "{{ kerberos_server_kadmin_pass }}\n{{ kerberos_server_kadmin_pass }}" | kadmin.local  -q "addprinc {{ kerberos_server_kadmin_user }}/admin"; touch /var/kerberos/admin_created creates=/var/kerberos/admin_created
 
+- name: Get existing users
+  shell: kadmin.local -q "listprincs"
+  ignore_errors: yes
+  changed_when: false
+  register: existing_users
+
+- name: Ensure users exist
+  shell: kadmin.local -q "addprinc -pw {{ item.password }} {{ item.name }}"
+  when: item.state == 'present' and existing_users.stdout.find('@'.join((item.name, (kerberos_server_realm_name | upper())))) == -1
+  no_log: true
+  with_items: "{{ kerberos_server_users }}"
+
+- name: Remove absent users
+  shell: kadmin.local -q "delprinc -force {{ item.name }}"
+  with_items: "{{ kerberos_server_users }}"
+  no_log: true
+  when: item.state == 'absent' and existing_users.stdout.find('@'.join((item.name, (kerberos_server_realm_name | upper())))) >= 0

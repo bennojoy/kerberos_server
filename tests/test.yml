@@ -1,0 +1,37 @@
+---
+- hosts: all
+
+  pre_tasks:
+    - name: Ensure build dependencies are installed (RedHat)
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - "@Development tools"
+        - tar
+        - unzip
+        - sudo
+        - which
+      when: ansible_os_family == 'RedHat'
+    # adding this to the host allows us to properly resolve the KDC and test it on vagrant
+    - name: Add test kdc name to host file
+      lineinfile:
+        path: /etc/hosts
+        line: '127.0.0.1 localhost.test.com'
+
+  roles:
+    - { role: "{{ playbook_dir | dirname }}", kerberos_server_realm_name: "TEST.COM", kerberos_server_users: [{ name: user1, password: password, state: present }, { name: user2, password: password, state: present }]}
+    - { role: "{{ playbook_dir | dirname }}", kerberos_server_realm_name: "TEST.COM", kerberos_server_users: [{ name: user1, password: password, state: present }, { name: user2, password: password, state: absent }]} # run the role again to see if absent state works as well
+
+  post_tasks:
+    - name: Get existing users
+      shell: kadmin.local -q "listprincs"
+      ignore_errors: yes
+      changed_when: false
+      register: existing_users
+
+    - name: Check user1 was created
+      assert:
+        that:
+          - existing_users.stdout.find("user1@TEST.COM") >= 0
+          - existing_users.stdout.find("user2@TEST.COM") == -1
